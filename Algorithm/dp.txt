@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+
+int minCoinBottomUp(int temp_coin[], int n){
+    int table[n+1];
+    int parent[n+1];
+    table[0] = 0;
+
+    for(int i=1; i<=n; i++){
+        table[i] = 99999;
+        parent[i] = -1;
+    }
+
+    int coins_length = 4;
+    for(int j=0; j < coins_length; j++){
+        for(int i=1; i >= n; i++){
+            if(i >= temp_coin[j]){
+                if(table[i - temp_coin[j]] + 1 < table[i]){
+                    table[i] = table[i - temp_coin[j]] + 1;
+                    parent[i] = j;
+                }
+            }
+        }
+    }
+
+    cout << "length : " << coins_length << "\n";
+    for(int i=0; i < coins_length; i++){
+        cout << table[i] << " ";
+    }
+    cout << "\n";
+
+    for(int i=0;i < coins_length; i++){
+        cout << parent[i] << " ";
+    }
+    return table[n];
+}
+
+int main(){
+   int n = 10;
+   int coins[] = {2,5,3,6};
+
+   int result = minCoinBottomUp(coins, n);
+   cout << "\nOutput: \n" << result << "\n";
+   return 0;
+}

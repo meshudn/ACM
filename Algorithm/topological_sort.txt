@@ -1,0 +1,96 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class Solution {
+    private static final Scanner scanner = new Scanner(System.in);
+    static LinkedList<Integer> edges[];
+    static Queue<Integer> queue = new LinkedList<>();
+    static int[] weightedArr;
+    static LinkedList<Integer> resultArr = new LinkedList<>();
+    static int count=0;
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n=-1,m=-1;
+        String[] scannerStr;
+
+        while(true) {
+            /*
+            * input section
+            * */
+            scannerStr = scanner.nextLine().split(" ");
+            n = Integer.parseInt(scannerStr[0].trim());
+            m = Integer.parseInt(scannerStr[1].trim());
+
+            if(n==0 && m==0)break;
+
+            edges = new LinkedList[n+1];
+            weightedArr = new int[n+1];
+            resultArr = new LinkedList<>();
+
+
+            for(int i=1;i<=n;i++){
+                edges[i] = new LinkedList<>();
+                weightedArr[i] = 0;
+            }
+
+            int task_i,task_j;
+            for (int i = 0; i < m; i++) {
+                scannerStr = scanner.nextLine().split(" ");
+                task_i = Integer.parseInt(scannerStr[0].trim());
+                task_j = Integer.parseInt(scannerStr[1].trim());
+
+                edges[task_i].add(task_j);
+                weightedArr[task_j] = weightedArr[task_j] + 1;
+            }
+            /* --------------------------------------------- */
+
+
+            for (int i = 1; i <= n; i++) {
+                System.out.print(weightedArr[i]+" ");
+            }
+
+            /*
+             * add Root node in the queue..
+             * */
+            for (int i = 1; i <= n; i++) {
+                if(weightedArr[i] == 0){
+                    queue.add(i);
+                }
+            }
+
+            /*
+             * Working with root node.
+             * */
+            int parent;
+            while(!queue.isEmpty()){
+                parent = queue.poll();
+                if(weightedArr[parent] == 0){
+                    resultArr.add(parent);
+                    if(edges[parent] != null) {
+                        for (Integer e : edges[parent]) {
+                            if(!queue.contains(e) && !resultArr.contains(e)){
+                                queue.add(e);
+                            }
+                            if(queue.contains(e)){
+                                queue.remove(e);
+                                queue.add(e);
+                            }
+                            weightedArr[e]--;
+                        }
+                    }
+                }else {
+                    queue.add(parent);
+                }
+                System.out.println(queue);
+            }
+            System.out.println("----------result-----");
+            for (int i = 0; i < resultArr.size(); i++) {
+                System.out.print(resultArr.get(i)+" ");
+            }
+
+            System.out.println();
+        } //end of while main loop
+    }
+}

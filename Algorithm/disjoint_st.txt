@@ -1,0 +1,116 @@
+package acmProblem;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+
+
+public class MainThread {
+
+	class Node{
+		long rank;
+		Node parent;
+		long data;
+	}
+	
+	 static Map<Long, Node> map = new HashMap<>();
+	
+	public void makeSet(long data) {
+		Node node = new Node();
+		node.rank = 1;
+		node.parent = node;
+		node.data = data;
+	    map.put(data, node);
+	}
+	
+	public boolean unionSet(long data1, long data2) {
+		Node node1 = map.get(data1);
+		Node node2 = map.get(data2);
+		
+		Node parent1 = findSet(node1);
+		Node parent2 = findSet(node2);
+		
+		if (parent1.data == parent2.data) {
+	            return false;
+	    }
+		  
+		if(parent1.rank >= parent2.rank) {
+			parent1.rank = parent1.rank + parent2.rank;
+			parent2.parent = parent1;
+		}
+		else {
+			parent1.parent = parent2;
+			parent2.rank = parent2.rank + parent1.rank;
+		}
+		System.out.println(parent1.rank +"::: "+parent2.rank); 
+		return true;
+		
+	}
+	
+	public static long findSet(long data) {
+		return findSet(map.get(data)).data;
+	}
+
+	
+	public static Node findSet(Node node) {
+		Node parent = node.parent;
+		if(parent == node) {
+			return parent;
+		}
+		node.parent = findSet(node.parent);
+		return node.parent;
+	}
+
+	
+	
+	
+	public static void main(String[] args) {
+		Vector sets = new Vector();
+		Vector setRank = new Vector();
+		MainThread m = new MainThread();
+		int n=10; int row=7;
+		
+		for (int i = 1; i <= n; i++) {
+			m.makeSet(i);
+		}
+		int[][] astronaut = {
+				{0, 2},
+				{1, 8},
+				{1, 4},
+				{2, 8},
+				{2, 6},
+				{3, 5},
+				{6, 9}
+		};
+		
+		for (int i = 0; i < row; i++) {
+			m.unionSet( astronaut[i][0]+1, astronaut[i][1]+1);
+		}
+		
+	
+	    for(int i=0;i<n;i++) {
+	    	long itemParent = findSet(i+1);
+	    	if(!sets.contains(itemParent)) {
+	    		sets.add(itemParent);
+	    		Node itemNode = map.get(itemParent);
+	    	    setRank.add( itemNode.rank );
+	    	}
+	    }
+	    System.out.println(sets);
+	    System.out.println(setRank);
+	    long sum = 0; long len = setRank.size();
+	    for (int j = 0; j < len; j++) {
+	    	long item = (long) setRank.get(j);
+	    	for (int i = j+1; i < len; i++) {
+				sum = sum + ((long) setRank.get(i)) * item; 
+			}			
+		}
+	    
+	    
+	    System.out.println(sum);
+	    
+	
+
+	}
+
+}

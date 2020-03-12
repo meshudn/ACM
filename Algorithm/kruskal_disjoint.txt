@@ -1,0 +1,136 @@
+package acmProblem;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Vector;
+
+
+
+
+public class MainThread {
+
+	class Node{
+		int u;
+		int v;
+		int weight=1;
+		Node parent;
+	}
+	static class Edge implements Comparable<Edge>{
+		int weight;
+		int u;
+		int v;
+		@Override
+		public int compareTo(Edge edge) {
+			if(weight == edge.weight) {
+				return Integer.compare(u+v+weight, edge.u + edge.v+ edge.weight);
+			}else {
+			  return Integer.compare(weight, edge.weight);
+		       }
+		}
+	}
+	
+	
+	 static Map<Integer, Node> map = new HashMap<>();
+	
+	public void makeSet(int u) {
+		Node node = new Node();
+		node.weight = 1;
+		node.parent = node;
+		node.u = u;
+		node.v = u;
+	    map.put(u, node);
+	}
+	
+	public boolean unionSet(int u1, int u2) {
+		Node node1 = map.get(u1);
+		Node node2 = map.get(u2);
+		
+		Node parent1 = findSet(node1);
+		Node parent2 = findSet(node2);
+
+	    node2.parent = node1;
+	    node1.v = node2.u;
+	 
+		return true;
+		
+	}
+	
+	public static int findSet(int u) {
+		return findSet(map.get(u)).u;
+	}
+
+	
+	public static Node findSet(Node node) {
+		Node parent = node.parent;
+		if(parent == node) {
+			return parent;
+		}
+		node.parent = findSet(node.parent);
+		return node.parent;
+	}
+
+	
+	
+	  private static final Scanner scanner = new Scanner(System.in);
+	  
+	public static void main(String[] args) {
+		    MainThread m = new MainThread();
+		    List<Edge> edges = new ArrayList<Edge>();
+		
+	        String[] gNodesEdges = scanner.nextLine().split(" ");
+	        int gNodes = Integer.parseInt(gNodesEdges[0].trim());
+	        int gEdges = Integer.parseInt(gNodesEdges[1].trim());
+
+	        int[] gFrom = new int[gEdges];
+	        int[] gTo = new int[gEdges];
+	        int[] gWeight = new int[gEdges];
+
+	        for (int i = 0; i < gEdges; i++) {
+	            String[] gFromToWeight = scanner.nextLine().split(" ");
+	            gFrom[i] = Integer.parseInt(gFromToWeight[0].trim());
+	            gTo[i] = Integer.parseInt(gFromToWeight[1].trim());
+	            gWeight[i] = Integer.parseInt(gFromToWeight[2].trim());
+	            
+	            Edge e = new Edge();
+	            e.u = gFrom[i];
+	            e.v = gTo[i];
+	            e.weight = gWeight[i];
+	            edges.add(e);
+	        }
+
+	        scanner.close();
+	        Collections.sort(edges);
+	       
+	        for (Edge node : edges) {
+				System.out.println(node.u + " "+node.v+" "+ node.weight );
+			}
+	       
+	        
+	        for (int i = 1; i <= gNodes; i++) {
+				m.makeSet(i);
+			}
+	        
+	        int totalWeight=0;
+	        
+            for (Edge e : edges) {
+				int from = findSet(e.u);
+				int to = findSet(e.v);
+				if(from != to) {
+					System.out.println(e.u + " :: "+e.v+" " + from+"=="+to);
+					m.unionSet(e.u, e.v);
+					totalWeight += e.weight;
+				}
+			}
+	        
+            System.out.println(totalWeight);
+	
+
+	}
+
+}
