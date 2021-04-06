@@ -1,7 +1,7 @@
 //LCA using sparse table
 //Complexity: O(NlgN,lgN)
 #define mx 100002
-int L[mx]; //level
+int L[mx];
 int P[mx][22]; //sparse table
 int T[mx]; //parent
 vector<int>g[mx];
